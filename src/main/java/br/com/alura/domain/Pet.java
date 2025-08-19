@@ -47,4 +47,15 @@ public class Pet {
     public Float getPeso() {
         return peso;
     }
+
+    public void setId(long id) {
+        this.id=id;
+    }
+
+    @Override
+    public String toString() {
+        return """
+                     "id":"%s","tipo":"%s","nome":"%s","raca":"%s","idade":"%d","cor":"%s","peso":"%f"
+                     """.formatted(this.id, this.tipo, this.nome, this.raca, this.idade, this.cor, this.peso);
+    }
 }

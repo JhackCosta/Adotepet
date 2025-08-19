@@ -2,7 +2,7 @@ package br.com.alura;
 
 import br.com.alura.client.ClientHttpConfiguration;
 import br.com.alura.service.AbrigoService;
-import br.com.alura.service.Petservice;
+import br.com.alura.service.PetService;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
@@ -18,7 +18,7 @@ public class AdopetConsoleApplication {
 
         ClientHttpConfiguration client = new ClientHttpConfiguration();
         AbrigoService abrigoService = new AbrigoService(client);
-        Petservice petservice = new Petservice(client);
+        PetService petservice = new PetService(client);
 
         System.out.println("##### BOAS VINDAS AO SISTEMA ADOPET CONSOLE #####");
         try {
@@ -39,9 +39,18 @@ public class AdopetConsoleApplication {
                 } else if (opcaoEscolhida == 2) {
                     abrigoService.cadastrarAbrigo();
                 } else if (opcaoEscolhida == 3) {
-                    petservice.listarPets();
+
+                    System.out.println("Digite o id ou nome do abrigo:");
+                    String idOuNome = new Scanner(System.in).nextLine();
+                    petservice.listarPets(idOuNome);
                 } else if (opcaoEscolhida == 4) {
-                    petservice.importarPet();
+                    System.out.println("Digite o id ou nome do abrigo:");
+                    String idOuNome = new Scanner(System.in).nextLine();
+
+                    System.out.println("Digite o nome do arquivo CSV:");
+                    String nomeArquivo = new Scanner(System.in).nextLine();
+
+                    petservice.importarPet(idOuNome, nomeArquivo);
                 } else if (opcaoEscolhida == 5) {
                     break;
                 } else {
@@ -54,8 +63,6 @@ public class AdopetConsoleApplication {
             e.printStackTrace();
         }
     }
-
-
 
     private static HttpResponse<String> dispararRequisicaoGet(HttpClient client, String uri) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()

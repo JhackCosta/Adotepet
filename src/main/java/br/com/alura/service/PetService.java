@@ -7,24 +7,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-
 import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
-public class Petservice {
+public class PetService {
 
-    private ClientHttpConfiguration client;
+    private final ClientHttpConfiguration client;
 
-
-    public Petservice (ClientHttpConfiguration client){
+    public PetService(ClientHttpConfiguration client){
         this.client=client;
     }
-    public void listarPets() throws IOException, InterruptedException {
-        System.out.println("Digite o id ou nome do abrigo:");
-        String idOuNome = new Scanner(System.in).nextLine();
-
+    public void listarPets(String idOuNome) throws IOException, InterruptedException {
         String uri = "http://localhost:8080/abrigos/" +idOuNome +"/pets";
         HttpResponse<String> response = client.dispararRequisicaoGet(uri);
         int statusCode = response.statusCode();
@@ -36,9 +30,16 @@ public class Petservice {
 
         Pet[] pets = new ObjectMapper().readValue(responseBody, Pet[].class);
         List<Pet> petList = Arrays.stream(pets).toList();
+        if (petList.isEmpty()) {
+            System.out.println("Não há Pets cadastrados");
+        } else {
+            mostrarPets(petList);
+        }
+    }
 
+    private void mostrarPets(List<Pet> pets) {
         System.out.println("Pets cadastrados:");
-        for (Pet pet : petList) {
+        for (Pet pet : pets) {
             long id = pet.getId();
             String tipo = pet.getTipo();
             String nome = pet.getNome();
@@ -48,13 +49,7 @@ public class Petservice {
         }
     }
 
-    public void importarPet() throws IOException, InterruptedException {
-        System.out.println("Digite o id ou nome do abrigo:");
-        String idOuNome = new Scanner(System.in).nextLine();
-
-        System.out.println("Digite o nome do arquivo CSV:");
-        String nomeArquivo = new Scanner(System.in).nextLine();
-
+    public void importarPet(String idOuNome, String nomeArquivo) throws IOException, InterruptedException {
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(nomeArquivo));
